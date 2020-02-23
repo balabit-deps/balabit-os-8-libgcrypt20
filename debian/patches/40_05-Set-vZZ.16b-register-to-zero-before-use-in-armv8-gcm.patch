@@ -1,0 +1,47 @@
+From ec7db47e9998bc68f8e849d0f2a454fb17cc144c Mon Sep 17 00:00:00 2001
+From: Marvin W <git@larma.de>
+Date: Wed, 22 Jan 2020 19:36:13 +0200
+Subject: [PATCH 5/6] Set vZZ.16b register to zero before use in armv8 gcm
+ implementation
+
+* cipher/cipher-gcm-armv8-aarch64-ce.S
+(_gcry_ghash_setup_armv8_ce_pmull): Set vZZ to zero.
+--
+
+Cherry-pick of master commit 79ed620ec46adbb08f5cea6a4865a95a436e4109.
+
+Reported by "Marvin W." at https://dev.gnupg.org/D497:
+>
+> The register vZZ.16b is expected to be always 0 throughout the macros
+> in cipher/cipher-gcm-armv8-aarch64-ce.S. The PMUL_128x128 and REDUCTION
+> macros are used in gcry_ghash_setup_armv8_ce_pmull function, however that
+> function does not set vZZ.16b to zero. If previous use left `vZZ.16b
+> non-zero before gcry_ghash_setup_armv8_ce_pmull is called, this will cause
+> invalid GCM auth tag results.
+>
+> The patch resets vZZ.16b to 0 at the beginning of
+> gcry_ghash_setup_armv8_ce_pmull.
+>
+
+[jk: from differential web-ui to commit]
+Signed-off-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+---
+ cipher/cipher-gcm-armv8-aarch64-ce.S | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/cipher/cipher-gcm-armv8-aarch64-ce.S b/cipher/cipher-gcm-armv8-aarch64-ce.S
+index 0cfaf1cc..21f6037c 100644
+--- a/cipher/cipher-gcm-armv8-aarch64-ce.S
++++ b/cipher/cipher-gcm-armv8-aarch64-ce.S
+@@ -377,6 +377,8 @@ _gcry_ghash_setup_armv8_ce_pmull:
+ 
+   GET_DATA_POINTER(x2, .Lrconst)
+ 
++  eor vZZ.16b, vZZ.16b, vZZ.16b
++
+   /* H¹ */
+   ld1 {rh1.16b}, [x0]
+   rbit rh1.16b, rh1.16b
+-- 
+2.25.0
+

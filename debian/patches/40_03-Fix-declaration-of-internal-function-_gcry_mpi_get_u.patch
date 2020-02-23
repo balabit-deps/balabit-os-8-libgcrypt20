@@ -1,0 +1,32 @@
+From a29e058ff1145428c97e7a87e9d90ebdd86c0360 Mon Sep 17 00:00:00 2001
+From: NIIBE Yutaka <gniibe@fsij.org>
+Date: Tue, 21 Jan 2020 08:59:19 +0900
+Subject: [PATCH 3/6] Fix declaration of internal function _gcry_mpi_get_ui.
+
+* src/gcrypt-int.h (_gcry_mpi_get_ui): Don't use ulong.
+
+--
+
+GnuPG-bug-id: 4818
+Reported-by: Bruno Haible
+Signed-off-by: NIIBE Yutaka <gniibe@fsij.org>
+---
+ src/gcrypt-int.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/gcrypt-int.h b/src/gcrypt-int.h
+index a69618c8..b4623983 100644
+--- a/src/gcrypt-int.h
++++ b/src/gcrypt-int.h
+@@ -362,7 +362,7 @@ gcry_mpi_t _gcry_mpi_copy (const gcry_mpi_t a);
+ void _gcry_mpi_snatch (gcry_mpi_t w, gcry_mpi_t u);
+ gcry_mpi_t _gcry_mpi_set (gcry_mpi_t w, const gcry_mpi_t u);
+ gcry_mpi_t _gcry_mpi_set_ui (gcry_mpi_t w, unsigned long u);
+-gcry_err_code_t _gcry_mpi_get_ui (gcry_mpi_t w, ulong *u);
++gcry_err_code_t _gcry_mpi_get_ui (gcry_mpi_t w, unsigned long *u);
+ void _gcry_mpi_swap (gcry_mpi_t a, gcry_mpi_t b);
+ int _gcry_mpi_is_neg (gcry_mpi_t a);
+ void _gcry_mpi_neg (gcry_mpi_t w, gcry_mpi_t u);
+-- 
+2.25.0
+

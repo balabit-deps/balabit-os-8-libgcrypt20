@@ -1,0 +1,35 @@
+From 761a1a0d30ea0c1ba385963cdc4c06d03ce126bc Mon Sep 17 00:00:00 2001
+From: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Date: Sat, 1 Feb 2020 17:57:47 +0200
+Subject: [PATCH 6/6] Fix wrong code execution in Poly1305 ARM/NEON
+ implementation
+
+* cipher/poly1305-armv7-neon.S
+(_gcry_poly1305_armv7_neon_init_ext): Set r14 to -1 at function entry.
+--
+
+Reported-by: Tomas Mraz
+GnuPG-bug-id: 4833
+Signed-off-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
+---
+ cipher/poly1305-armv7-neon.S | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/cipher/poly1305-armv7-neon.S b/cipher/poly1305-armv7-neon.S
+index 13cb4a5d..b4dc9461 100644
+--- a/cipher/poly1305-armv7-neon.S
++++ b/cipher/poly1305-armv7-neon.S
+@@ -87,9 +87,7 @@ _gcry_poly1305_armv7_neon_init_ext:
+ .Lpoly1305_init_ext_neon_local:
+ 	stmfd sp!, {r4-r11, lr}
+ 	sub sp, sp, #32
+-	mov r14, r2
+-	and r2, r2, r2
+-	moveq r14, #-1
++	mov r14, #-1
+ 	UNALIGNED_LDMIA4(r1, r2, r3, r4, r5)
+ 	GET_DATA_POINTER(r7,.Lpoly1305_init_constants_neon,r8)
+ 	mov r6, r2
+-- 
+2.25.0
+

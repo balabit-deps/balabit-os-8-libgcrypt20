@@ -1,0 +1,41 @@
+From 03e6d6597198ee45d715c2d00bd174622f2875a8 Mon Sep 17 00:00:00 2001
+From: NIIBE Yutaka <gniibe@fsij.org>
+Date: Thu, 23 Jan 2020 10:29:10 +0900
+Subject: [PATCH 4/6] random: Fix include of config.h.
+
+* random/random-drbg.c: Include config.h earlier.
+
+--
+
+Cherry pick master commit of:
+	e0898d0628789414da23e0526c87df1885c8b3ae
+
+GnuPG-bug-id: 4818
+Reported-by: Bruno Haible
+Signed-off-by: NIIBE Yutaka <gniibe@fsij.org>
+---
+ random/random-drbg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/random/random-drbg.c b/random/random-drbg.c
+index 7f66997b..ed04e2dc 100644
+--- a/random/random-drbg.c
++++ b/random/random-drbg.c
+@@ -146,12 +146,12 @@
+  * gcry_randomize(outbuf, OUTLEN, GCRY_STRONG_RANDOM);
+  */
+ 
++#include <config.h>
++
+ #include <string.h>
+ #include <unistd.h>
+ #include <stdint.h>
+ 
+-#include <config.h>
+-
+ #include "g10lib.h"
+ #include "random.h"
+ #include "rand-internal.h"
+-- 
+2.25.0
+

@@ -1,0 +1,52 @@
+From 006e51cd83a1c36509d124c251cea2f515bcc1ad Mon Sep 17 00:00:00 2001
+From: NIIBE Yutaka <gniibe@fsij.org>
+Date: Thu, 24 Oct 2019 09:32:24 +0900
+Subject: [PATCH 2/6] ecc: Fix wrong handling of shorten PK bytes.
+
+* cipher/ecc-misc.c (_gcry_ecc_mont_decodepoint): Zeros are
+already recovered.
+
+--
+
+Before the commit 6cb6df9, it worked correctly (in fact), because the
+condition "rawmpilen < nbytes" never matched.  The commit tried to
+detect removal (to fill) by wrong way, but it _is_ recovered already
+in _gcry_mpi_get_buffer by the FILL_LE argument.  This bug only hits
+when removed zeros are long enough to be a limb.
+
+Fixes-commit: 6cb6df9dddac6ad246002b83c2ce0aaa0ecf30e5
+Signed-off-by: NIIBE Yutaka <gniibe@fsij.org>
+---
+ cipher/ecc-misc.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/cipher/ecc-misc.c b/cipher/ecc-misc.c
+index 41debe40..34dd6804 100644
+--- a/cipher/ecc-misc.c
++++ b/cipher/ecc-misc.c
+@@ -340,17 +340,11 @@ _gcry_ecc_mont_decodepoint (gcry_mpi_t pk, mpi_ec_t ctx, mpi_point_t result)
+        * So, we need to check if it's really the prefix or not.
+        * Only when it's the prefix, we remove it.
+        */
+-      if (pk->nlimbs * BYTES_PER_MPI_LIMB < nbytes)
+-        {/*
+-          * It is possible for data created by older implementation
+-          * to have shorter length when it was parsed as MPI.
+-          */
+-          unsigned int len = pk->nlimbs * BYTES_PER_MPI_LIMB;
+-
+-          memmove (rawmpi + nbytes - len, rawmpi, len);
+-          memset (rawmpi, 0, nbytes - len);
+-        }
+-
++      /*
++       * It is possible for data created by older implementation to
++       * have shorter length when it was parsed as MPI.  Those removed
++       * zero(s) are recovered by _gcry_mpi_get_buffer.
++       */
+       /*
+        * When we have the prefix (0x40 or 0x00), it comes at the end,
+        * since it is taken by _gcry_mpi_get_buffer with little endian.
+-- 
+2.25.0
+
