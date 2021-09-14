@@ -9,3 +9,5 @@
 40_05-Set-vZZ.16b-register-to-zero-before-use-in-armv8-gcm.patch
 40_06-Fix-wrong-code-execution-in-Poly1305-ARM-NEON-implem.patch
 disable_fips_enabled_read.patch
+CVE-2021-33560.patch
+CVE-2021-40528.patch

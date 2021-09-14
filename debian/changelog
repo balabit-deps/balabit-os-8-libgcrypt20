@@ -1,3 +1,16 @@
+libgcrypt20 (1.8.5-5ubuntu1.1) focal-security; urgency=medium
+
+  * SECURITY UPDATE: lack of exponent blinding in ElGamal encryption
+    - debian/patches/CVE-2021-33560.patch: harden ElGamal by introducing
+      exponent blinding too in cipher/elgamal.c.
+    - CVE-2021-33560
+  * SECURITY UPDATE: incorrect support of smaller K
+    - debian/patches/CVE-2021-40528.patch: fix ElGamal encryption for other
+      implementations in cipher/elgamal.c.
+    - CVE-2021-40528
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Tue, 14 Sep 2021 14:36:24 -0400
+
 libgcrypt20 (1.8.5-5ubuntu1) focal; urgency=low
 
   * Merge from Debian unstable.  Remaining changes:
